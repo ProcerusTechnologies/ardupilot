@@ -21,5 +21,15 @@ bool ModePlanckLand::init(bool ignore_checks){
 }
 
 void ModePlanckLand::run(){
+    if(copter.planck_interface.teth_just_locked())
+    {
+      //TODO make the value a param
+      copter.pos_control->get_pos_z_p().kP(0.3);
+    }
+    else if(copter.planck_interface.teth_just_unlocked())
+    {
+      //TODO make the value a param
+      copter.pos_control->get_pos_z_p().kP(1);
+    }
     copter.mode_plancktracking.run();
 }

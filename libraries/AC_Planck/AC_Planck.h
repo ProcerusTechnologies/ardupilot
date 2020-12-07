@@ -66,6 +66,14 @@ public:
   //Get a position, velocity, yaw command
   bool get_posvel_cmd(Location &loc, Vector3f &vel_cms, float &yaw_cd, bool &is_yaw_rate);
 
+  bool teth_just_locked(){
+      bool temp = _teth_just_locked;
+      _teth_just_locked = false;
+      return temp;};
+  bool teth_just_unlocked(){
+      bool temp = _teth_just_unlocked;
+      _teth_just_unlocked = false;
+      return temp;};
 private:
 
   struct
@@ -93,9 +101,29 @@ private:
     uint32_t timestamp_ms = 0;
   }_status;
 
+  struct
+  {
+    float cable_out = 0;
+    float cable_velocity = 0;
+    uint8_t cable_tension = 0;
+    uint8_t hv_power = 0;
+    uint8_t hv_temperature = 0;
+    uint8_t hv_watts = 0;
+    uint8_t silent_mode = 0;
+    uint8_t spool_status = 0;
+    uint8_t system_status = 0;
+    uint32_t timestamp_ms = 0;
+  }_teth_status;
+
   mavlink_channel_t _chan = MAVLINK_COMM_1;
 
   bool _was_at_location = false; //For debouncing at-location
+
+  bool _teth_was_locked = false;
+  bool _teth_just_locked = false;
+  bool _teth_just_unlocked= false;
+
+
 
   bool _is_status_ok(void) { return ((AP_HAL::millis() - _status.timestamp_ms) < 500); }
 };

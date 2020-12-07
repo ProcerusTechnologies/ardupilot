@@ -29,7 +29,40 @@ void AC_Planck::handle_planck_mavlink_msg(const mavlink_channel_t &chan, const m
         }
         break;
     }
+    case MAVLINK_MSG_ID_PLANCK_DECK_TETHER_STATUS:
+    {
+      mavlink_planck_deck_tether_status_t ts;
+      mavlink_msg_planck_deck_tether_status_decode(mav_msg, &ts);
+      _teth_status.cable_out = ts.CABLE_OUT;
+      _teth_status.cable_velocity = ts.CABLE_VELOCITY;
+      _teth_status.cable_tension = ts.CABLE_TENSION;
+      _teth_status.hv_power = ts.HV_POWER;
+      _teth_status.hv_temperature = ts.HV_TEMPERATURE;
+      _teth_status.hv_watts = ts.HV_WATTS;
+      _teth_status.silent_mode = ts.SILENT_MODE;
+      _teth_status.spool_status = ts.SPOOL_STATUS;
+      _teth_status.system_status = ts.SYSTEM_STATUS;
+      _teth_status.timestamp_ms = AP_HAL::millis();
 
+      if(!_teth_was_locked && _teth_status.spool_status == PLANCK_DECK_SPOOL_LOCKED)
+      {
+          _teth_was_locked = true;
+          _teth_just_locked = true;
+      }
+      else{
+          _teth_just_locked = false;
+      }
+
+      if(_teth_was_locked && _teth_status.spool_status != PLANCK_DECK_SPOOL_LOCKED)
+      {
+          _teth_was_locked = false;
+          _teth_just_unlocked = true;
+      }
+      else{
+          _teth_just_unlocked = false;
+      }
+
+    }
      case MAVLINK_MSG_ID_PLANCK_CMD_MSG:
      {
         mavlink_planck_cmd_msg_t pc;
