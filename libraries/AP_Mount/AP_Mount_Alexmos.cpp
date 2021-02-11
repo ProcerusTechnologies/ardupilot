@@ -174,10 +174,7 @@ void AP_Mount_Alexmos::control_axis(const Vector3f& angle, bool target_in_degree
     alexmos_parameters outgoing_buffer;
     outgoing_buffer.angle_speed.mode_roll = get_control_mode(_state._roll_input_mode);
     outgoing_buffer.angle_speed.mode_pitch = get_control_mode(_state._pitch_input_mode);
-    // Always setting the yaw mode to be speed rather than angles, so the current mavlinkVSM will work as is.
-    // The pilot view button won't center the mount yaw until we update the mavlinkVSM and set the mode_yaw
-    // back to be under GCS control via the MAV_CMD_DO_MOUNT_CONFIGURE command
-    outgoing_buffer.angle_speed.mode_yaw = AP_MOUNT_ALEXMOS_MODE_SPEED;
+    outgoing_buffer.angle_speed.mode_yaw = get_control_mode(_state._yaw_input_mode);
     outgoing_buffer.angle_speed.speed_roll = DEGREE_PER_SEC_TO_VALUE(target_deg.x);
     outgoing_buffer.angle_speed.angle_roll = DEGREE_TO_VALUE(target_deg.x);
     outgoing_buffer.angle_speed.speed_pitch = DEGREE_PER_SEC_TO_VALUE(target_deg.y);
